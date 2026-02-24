@@ -16,7 +16,6 @@ import model.Category;
  */
 public class CategoryIplm implements CategoryDao {
 
-    @Override
     public List<Category> findAllCategory() {
         List<Category> listCategory = new ArrayList<>();
         String sql = "SELECT * FROM categories";
@@ -37,13 +36,49 @@ public class CategoryIplm implements CategoryDao {
 
         return listCategory;
     }
-    public void insertCategory(String name){
-        
-    };
-    public void deleteCategory(int id){
-        
-    };
-    public void updateCategory(int id, String name, String newname){
-        
-    };
+     @Override
+    public void insertCategory(String name) {
+        String sql = "INSERT INTO categories(name) VALUES (?)";
+
+        try (Connection con = MySQLDriver.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, name);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateCategory(int id, String name) {
+        String sql = "UPDATE categories SET name=? WHERE id=?";
+
+        try (Connection con = MySQLDriver.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, name);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteCategory(int id) {
+        String sql = "DELETE FROM categories WHERE id=?";
+
+        try (Connection con = MySQLDriver.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

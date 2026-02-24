@@ -1,25 +1,29 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-/**
- *
- * @author DELL
- */
+
 public class Product {
     int id, id_category, quantity;
     String image, name;
     double price;
-    boolean status;
+    int status;
+private int cartQuantity;
 
-    // Constructor rỗng (thường dùng)
-    public Product() {} 
-    
-    // Constructor 1 (Full)
-    public Product(int id, int id_category, int quantity, String image, String name, double price, boolean status) {
+private double totalPrice;
+
+    public int getCartQuantity() {
+        return cartQuantity;
+    }
+
+    public void setCartQuantity(int cartQuantity) {
+        this.cartQuantity = cartQuantity;
+    }
+    public double getTotalPrice() { return totalPrice; }
+public void setTotalPrice(double totalPrice) { this.totalPrice = totalPrice; }
+    public Product() {}
+
+    public Product(int id, int id_category, int quantity, String image, String name, double price, int status) {
         this.id = id;
         this.id_category = id_category;
         this.quantity = quantity;
@@ -28,18 +32,19 @@ public class Product {
         this.price = price;
         this.status = status;
     }
-    
-    // Constructor 2 (Từ ResultSet) - Đã thêm các trường còn thiếu
+
+    // Constructor từ ResultSet (CHUẨN)
     public Product(ResultSet rs) throws SQLException {
         this.id = rs.getInt("id");
-        this.id_category = rs.getInt("id_category"); // Đảm bảo lấy id_category
-        this.quantity = 1; // Khởi tạo ban đầu khi lấy từ DB
+        this.id_category = rs.getInt("id_category");
+        this.quantity = rs.getInt("quantity");   // ✔ LẤY ĐÚNG TỒN KHO TRONG DB
         this.image = rs.getString("image");
         this.name = rs.getString("name");
         this.price = rs.getDouble("price");
-        this.status = rs.getBoolean("status"); // Đảm bảo lấy status
+        this.status = rs.getInt("status");
     }
 
+    // GETTER
     public int getId() {
         return id;
     }
@@ -64,15 +69,15 @@ public class Product {
         return price;
     }
 
-    public boolean isStatus() {
-        return status;
-    }
-    
-    // Thêm getter cho boolean theo convention (dù isStatus() đã có)
-    public boolean getStatus() {
+    public int isStatus() {
         return status;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    // SETTER
     public void setId(int id) {
         this.id = id;
     }
@@ -97,9 +102,17 @@ public class Product {
         this.price = price;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(int status) {
         this.status = status;
     }
-    
-    
+    private int sold;
+
+public int getSold() {
+    return sold;
+}
+
+public void setSold(int sold) {
+    this.sold = sold;
+}
+
 }

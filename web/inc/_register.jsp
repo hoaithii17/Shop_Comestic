@@ -1,83 +1,136 @@
-<section class="vh-100" style="background-color: #eee;">
-  <div class="container h-100">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col-lg-12 col-xl-11">
-        <div class="card text-black" style="border-radius: 25px;">
-          <div class="card-body p-md-5">
-            <div class="row justify-content-center">
-              <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+<!DOCTYPE html>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng ký tài khoản</title>
 
-                <p class="text-center h1 fw-bold mb-3 mx-1 mx-md-4 mt-4">Sign up</p>
-                  <span style= "color: red">${user_exist}</span>
-                <form class="mx-1 mx-md-4" action= "" method= "post" >
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-                  <div class="d-flex flex-row align-items-center mb-3">
-                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
-                    <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                      <input type="text" name="name" class="form-control" required="" /> 
-                      <label class="form-label" for="form3Example1c">Your Name</label>
-                    </div>
-                  </div>
+  <style>
+    body {
+      background: #fff5fa;
+      font-family: "Poppins", sans-serif;
+    }
 
-                  <div class="d-flex flex-row align-items-center mb-3">
-                    <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                    <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                      <input type="text" name="email" class="form-control" required="" />
-                      <label class="form-label" for="form3Example3c">Your Email</label>
-                      <span style= "color: red">${err_email}</span>
-                    </div>
-                  </div>
-                  <div class="d-flex flex-row align-items-center mb-3">
-                    <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                    <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                      <input type="text" name="phone" class="form-control" required="" />
-                      <label class="form-label" for="form3Example3c">Your Phone</label>
-                      <span style= "color: red">${err_phone}</span>
-                    </div>
-                  </div>
+    .register-card {
+      background: #ffffff;
+      padding: 35px;
+      border-radius: 20px;
+      box-shadow: 0px 10px 30px rgba(255, 100, 150, 0.15);
+    }
 
-                  <div class="d-flex flex-row align-items-center mb-3">
-                    <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
-                    <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                      <input type="password" name="password" class="form-control" required="" />
-                      <label class="form-label" for="form3Example4c">Password</label>
-                    
-                    </div>
-                  </div>
+    .form-control {
+      border-radius: 12px;
+      border: 1px solid #ffc9e1;
+    }
 
-                  <div class="d-flex flex-row align-items-center mb-3">
-                    <i class="fas fa-key fa-lg me-3 fa-fw"></i>
-                    <div data-mdb-input-init class="form-outline flex-fill mb-0">
-                      <input type="password" name="repassword" class="form-control" required="" />
-                      <label class="form-label" for="form3Example4cd">Repeat your password</label>
-                        <span style= "color: red">${err_repassword}</span>
-                    </div>
-                  </div>
+    .form-control:focus {
+      border-color: #ff7eb3;
+      box-shadow: 0 0 0 0.15rem rgba(255, 126, 179, 0.25);
+    }
 
-                  <div class="form-check d-flex justify-content-center mb-3">
-                    <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3c" />
-                    <label class="form-check-label" for="form2Example3">
-                      I agree all statements in <a href="#!">Terms of service</a>
-                    </label>
-                  </div>
+    .btn-pink {
+      background: linear-gradient(90deg, #ff7eb3, #ff65a3);
+      border: none;
+      border-radius: 25px;
+      padding: 10px;
+      font-weight: 600;
+      color: white;
+    }
 
-                  <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-3">
-                    <button  type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg">Register</button>
-                  </div>
+    .btn-pink:hover {
+      background: linear-gradient(90deg, #ff5c9a, #ff3d85);
+      color: white;
+    }
 
-                </form>
+    .title {
+      color: #ff3d85;
+      font-weight: 700;
+    }
+  </style>
+</head>
 
-              </div>
-              <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
+<body>
 
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
-                  class="img-fluid" alt="Sample image">
+<section class="py-5">
+  <div class="container">
+    <div class="row align-items-center justify-content-center">
 
-              </div>
+      <!-- ẢNH -->
+      <div class="col-md-6 text-center mb-4">
+        <img src="assets/icon/register.png" alt="cosmetic" class="img-fluid" style="max-height: 420px;">
+      </div>
+
+      <!-- FORM -->
+      <div class="col-md-6">
+        <div class="register-card">
+
+          <h3 class="text-center mb-3 title">Tạo tài khoản mới</h3>
+          <p class="text-center text-muted mb-4">Tham gia để nhận ưu đãi mỹ phẩm dành riêng cho bạn ✿</p>
+
+          <span class="text-danger">${user_exist}</span>
+
+          <form action="" method="post">
+
+            <!-- Họ tên -->
+            <div class="mb-3">
+              <label class="form-label">Họ và tên</label>
+              <input type="text" name="name" class="form-control" required>
             </div>
-          </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="text" name="email" class="form-control" required>
+              <span class="text-danger">${err_email}</span>
+            </div>
+
+            <!-- Số điện thoại -->
+            <div class="mb-3">
+              <label class="form-label">Số điện thoại</label>
+              <input type="text" name="phone" class="form-control" required>
+              <span class="text-danger">${err_phone}</span>
+            </div>
+
+            <!-- Mật khẩu -->
+            <div class="mb-3">
+              <label class="form-label">Mật khẩu</label>
+              <input type="password" name="password" class="form-control" required>
+            </div>
+
+            <!-- Nhập lại mật khẩu -->
+            <div class="mb-3">
+              <label class="form-label">Nhập lại mật khẩu</label>
+              <input type="password" name="repassword" class="form-control" required>
+              <span class="text-danger">${err_repassword}</span>
+            </div>
+
+            <!-- Điều khoản -->
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" required>
+              <label class="form-check-label">
+                Tôi đồng ý với <a href="#" style="color:#ff3d85;">Điều khoản dịch vụ</a>
+              </label>
+            </div>
+
+            <!-- Nút -->
+            <button type="submit" class="btn btn-pink w-100 mb-3">Đăng ký</button>
+
+            <p class="text-center">
+              Đã có tài khoản?
+              <a href="login" style="color:#ff3d85;">Đăng nhập ngay</a>
+            </p>
+
+          </form>
+
         </div>
       </div>
+
     </div>
   </div>
 </section>
+
+</body>
+</html>

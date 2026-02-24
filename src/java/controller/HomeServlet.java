@@ -12,10 +12,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import model.Category;
 import model.Product;
+import model.User;
 
 /**
  *
@@ -59,46 +61,58 @@ public class HomeServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+ @Override
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
-        
-        // --- LOGIC MỚI: Xử lý Thêm vào giỏ hàng từ GET request (Link) ---
-        String productIdParam = request.getParameter("id_product");
-        String categoryIdParam = request.getParameter("id_category");
-        
-        if (productIdParam != null && !productIdParam.isEmpty()) {
-            // Xử lý logic thêm sản phẩm vào giỏ hàng
-            addProductToCart(request);
-            
-            // Xử lý URL sau khi Redirect
-            String redirectUrl = request.getContextPath() + "/home";
-            if (categoryIdParam != null && !categoryIdParam.isEmpty()) {
-                 // Nếu có id_category, chuyển hướng về trang danh mục đó
-                redirectUrl += "?id_category=" + categoryIdParam;
-            }
-            
-            // Redirect để ngăn lỗi thêm sản phẩm lặp lại khi người dùng Refresh trang
-            response.sendRedirect(redirectUrl);
-            return; // Dừng xử lý doGet
-        }
-        // ------------------------------------------------------------------
-        
-        // --- LOGIC CŨ: Load dữ liệu và hiển thị trang ---
-        List<Category> listCategory = Database.getCategoryDao().findAllCategory();
-        request.setAttribute("listCategory", listCategory);
 
-        List<Product> listProduct = Database.getProductDao().findAllProduct();
-        request.setAttribute("listProduct", listProduct);
-        
-        // Đặt id_category lại để hiển thị filter nếu có
-        if (categoryIdParam != null) {
-            request.setAttribute("id_category", categoryIdParam);
+    String productIdParam = request.getParameter("id_product");
+    String categoryIdParam = request.getParameter("id_category");
+
+    // Nếu có yêu cầu thêm sản phẩm vào giỏ hàng
+    if (productIdParam != null && !productIdParam.isEmpty()) {
+
+        // Kiểm tra đăng nhập
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("user") : null;
+
+        if (user == null) {
+            // Nếu chưa đăng nhập, redirect về trang login
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
         }
-        
-        request.setAttribute("title", "Home page");
-        request.getRequestDispatcher("./views/home.jsp").include(request, response);
+
+        // Nếu đã đăng nhập, thêm sản phẩm vào giỏ hàng
+        addProductToCart(request);
+
+        // Chuyển hướng về home hoặc theo category
+        String redirectUrl = request.getContextPath() + "/home";
+        if (categoryIdParam != null && !categoryIdParam.isEmpty()) {
+            redirectUrl += "?id_category=" + categoryIdParam;
+        }
+        response.sendRedirect(redirectUrl);
+        return;
     }
+
+    // Load danh mục
+    List<Category> listCategory = Database.getCategoryDao().findAllCategory();
+    request.setAttribute("listCategory", listCategory);
+
+    // Load toàn bộ sản phẩm
+    List<Product> listProduct = Database.getProductDao().findAllProduct();
+    request.setAttribute("listProduct", listProduct);
+
+    // Load sản phẩm BEST SELLER
+    List<Product> bestSeller = Database.getProductDao().findBestSeller();
+    request.setAttribute("bestSeller", bestSeller);
+
+    // Giữ lại id_category nếu có
+    if (categoryIdParam != null) {
+        request.setAttribute("id_category", categoryIdParam);
+    }
+
+    request.setAttribute("title", "Home page");
+    request.getRequestDispatcher("./views/home.jsp").include(request, response);
+}
 
 
     /**

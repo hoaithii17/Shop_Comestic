@@ -4,6 +4,9 @@
  */
 package controller;
 
+import data.dao.ProductDao;
+import data.driver.MySQLDriver;
+import data.impl.ProductImpl;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+
 import model.Product;
 
 /**
@@ -99,24 +103,52 @@ public class CartServlet extends HttpServlet {
     // Lưu lại giỏ hàng vào session
     request.getSession().setAttribute("cart", cart);}
      void doUpdate(HttpServletRequest request, int id_product) {
+
     // Lấy giỏ hàng từ session
     List<Product> cart = (List<Product>) request.getSession().getAttribute("cart");
+    if (cart == null) return;
 
-    // Lấy số lượng mới từ form
+    // Lấy số lượng mới từ input
     int quantity = Integer.parseInt(request.getParameter("quantity"));
 
-    // Cập nhật số lượng cho sản phẩm trong giỏ
+    // Lấy sản phẩm thật từ DB để kiểm tra tồn kho
+  // Lấy sản phẩm từ DB
+ProductDao productDao = new ProductImpl();
+Product dbProduct = productDao.findProduct(id_product);
+
+
+    if (dbProduct == null) {
+        request.getSession().setAttribute("error", "Sản phẩm không tồn tại!");
+        return;
+    }
+
+    // ❌ Hết hàng → không cho cập nhật
+    if (dbProduct.getQuantity() <= 0) {
+        request.getSession().setAttribute("error",
+                "Sản phẩm '" + dbProduct.getName() + "' đã hết hàng!");
+        return;
+    }
+
+    // ❌ Người dùng nhập vượt quá số lượng kho
+    if (quantity > dbProduct.getQuantity()) {
+        request.getSession().setAttribute("error",
+                "Số lượng vượt quá tồn kho! Chỉ còn " + dbProduct.getQuantity() + " sản phẩm.");
+        quantity = dbProduct.getQuantity(); // tự hạ xuống mức tối đa
+    }
+
+    // ❌ Không cho nhập số <= 0
+    if (quantity <= 0) quantity = 1;
+
+    // ✔ Cập nhật vào giỏ
     for (Product pro : cart) {
-        if (pro.getId() == id_product && quantity > 0) {
+        if (pro.getId() == id_product) {
             pro.setQuantity(quantity);
+            pro.setTotalPrice(pro.getPrice() * quantity);
             break;
         }
     }
 
-    // Lưu lại giỏ hàng vào session
+    // Lưu lại giỏ hàng
     request.getSession().setAttribute("cart", cart);
 }
-
-            
-
 }

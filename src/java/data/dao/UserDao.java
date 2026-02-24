@@ -1,17 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package data.dao;
 
+import java.util.List;
 import model.User;
 
-/**
- *
- * @author DELL
- */
 public interface UserDao {
-    public User findUser(String emailphone, String password);
-    public User findUser(String emailphone);
-    public void insertUser(String name, String email, String phone, String password);
+    User findUser(String emailphone, String password);
+    User findUser(String emailphone);
+    void insertUser(String name, String email, String phone, String password);
+    void insertUser(User user);
+    boolean updateUser(User user);
+    User getUserById(int id);
+    boolean updatePassword(int id, String newPassword);
+    List<User> findAllUsers();
+    void deleteUser(int id);
+    User findById(int id);
 }

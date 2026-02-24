@@ -12,10 +12,8 @@ import model.Category;
  * @author DELL
  */
 public interface CategoryDao {
-    public List<Category> findAllCategory();
-    public void insertCategory(String name);
+    public List<Category> findAllCategory() ;
+      public void insertCategory(String name);
     public void deleteCategory(int id);
-    public void updateCategory(int id, String name, String newname);
-    
-    
+    public void updateCategory(int id, String name);
 }
